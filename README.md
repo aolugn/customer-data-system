@@ -43,7 +43,7 @@ It reflects core concepts used in CRM systems, such as:
 ## Project structure
 
 - `main.py` — contains the core system logic and example usage
-- 
+
 ## Example usage
 
 ```python
