@@ -1,6 +1,7 @@
-# Customer Data System – Educational assignment (demo data anonymized
+"""Customer Data System educational demo (anonymized data)."""
 
 from datetime import datetime
+from typing import Optional
 
 
 class Customer:
@@ -18,11 +19,10 @@ class Customer:
         self.interactions.append(interaction)
         self.last_interaction = datetime.now()
 
-    def days_since_last_interaction(self):
+    def days_since_last_interaction(self) -> Optional[int]:
         if self.last_interaction is None:
             return None
-        else:
-            return (datetime.now() - self.last_interaction).days
+        return (datetime.now() - self.last_interaction).days
 
 
 class CustomerDataSystem:
@@ -31,31 +31,34 @@ class CustomerDataSystem:
         self.customers = []
 
     def add_customer(self, name, email, phone):
-        for e in self.customers:
-            if e.email.lower() == email.lower():
+        for customer in self.customers:
+            if customer.email.lower() == email.lower():
                 raise ValueError(f"A customer with email address {email} is already registered.")
-        self.customers.append(Customer(name, email, phone))
-        print(f"Customer added: {name}")
+
+        customer = Customer(name, email, phone)
+        self.customers.append(customer)
+        return customer
 
     def remove_customer(self, name):
-        c = self.get_customer(name)
-        if c is None:
+        customer = self.get_customer(name)
+        if customer is None:
             raise KeyError(f"Customer named {name} is not registered.")
-        self.customers.remove(c)
-        print(f"Customer removed: {name}")
+
+        self.customers.remove(customer)
+        return customer
 
     def update_customer_contact(self, name, email=None, phone=None):
-        c = self.get_customer(name)
-        if c is None:
+        customer = self.get_customer(name)
+        if customer is None:
             raise KeyError(f"Customer named {name} is not registered.")
 
         if email is not None:
-            c.email = email
-            print(f"Email updated for {name}: {email}")
+            customer.email = email
 
         if phone is not None:
-            c.phone = phone
-            print(f"Phone number updated for {name}: {phone}")
+            customer.phone = phone
+
+        return customer
 
     def get_customer(self, name):
         for c in self.customers:
@@ -64,58 +67,56 @@ class CustomerDataSystem:
         return None
 
     def add_customer_interaction(self, name, interaction):
-        c = self.get_customer(name)
-        if c is None:
+        customer = self.get_customer(name)
+        if customer is None:
             raise KeyError(f"Customer named {name} is not registered.")
-        c.add_interaction(interaction)
-        print(f"Interaction added for {name}.")
+
+        customer.add_interaction(interaction)
+        return customer
 
     def get_interaction_list(self, name):
-        c = self.get_customer(name)
-        if c is None:
+        customer = self.get_customer(name)
+        if customer is None:
             raise KeyError(f"Customer named {name} is not registered.")
 
-        if len(c.interactions) == 0:
-            print(f"{name} has no registered interactions.")
-            return []
-
-        print(f"List of interactions for {name}:")
-        for i, interaction in enumerate(c.interactions, 1):
-            print(f"{i}. {interaction}")
-
-        return c.interactions
+        return customer.interactions
 
     def get_customer_list(self):
-        if len(self.customers) == 0:
-            print("There are no customers registered in the system.")
-            return
-
-        print("Customer list:")
-        for c in self.customers:
-            print(c)
+        return self.customers
 
 
 if __name__ == "__main__":
     system = CustomerDataSystem("CRM Demo")
 
     print("Creating customers...")
-    system.add_customer("Customer A", "customer.a@example.com", "0700000001")
-    system.add_customer("Customer B", "customer.b@example.com", "0700000002")
-    system.add_customer("Customer C", "customer.c@example.com", "0700000003")
+    customer_a = system.add_customer("Customer A", "customer.a@example.com", "0700000001")
+    customer_b = system.add_customer("Customer B", "customer.b@example.com", "0700000002")
+    customer_c = system.add_customer("Customer C", "customer.c@example.com", "0700000003")
+    print(f"Customer added: {customer_a.name}")
+    print(f"Customer added: {customer_b.name}")
+    print(f"Customer added: {customer_c.name}")
 
     print("Updating contact details...")
-    system.update_customer_contact("Customer A", phone="0700000099")
+    updated_customer = system.update_customer_contact("Customer A", phone="0700000099")
+    print(f"Phone number updated for {updated_customer.name}: {updated_customer.phone}")
 
     print("Adding interactions...")
     system.add_customer_interaction("Customer A", "Initial contact – phone call")
     system.add_customer_interaction("Customer A", "Follow-up – email")
     system.add_customer_interaction("Customer B", "Support question – chat")
+    print("Interactions added.")
 
     print("Showing interactions...")
-    system.get_interaction_list("Customer A")
+    interactions = system.get_interaction_list("Customer A")
+    if not interactions:
+        print("Customer A has no registered interactions.")
+    else:
+        print("List of interactions for Customer A:")
+        for i, interaction in enumerate(interactions, 1):
+            print(f"{i}. {interaction}")
 
-    customer_a = system.get_customer("Customer A")
-    days = customer_a.days_since_last_interaction()
+    customer_a_record = system.get_customer("Customer A")
+    days = customer_a_record.days_since_last_interaction()
 
     if days is None:
         print("Days since last interaction (Customer A): No interactions")
@@ -123,7 +124,12 @@ if __name__ == "__main__":
         print(f"Days since last interaction (Customer A): {days}")
 
     print("Customer overview:")
-    system.get_customer_list()
+    customers = system.get_customer_list()
+    if not customers:
+        print("There are no customers registered in the system.")
+    else:
+        for customer in customers:
+            print(customer)
 
     print("Testing error handling...")
 
