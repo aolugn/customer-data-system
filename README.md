@@ -4,6 +4,10 @@ Built as part of a course in object-oriented programming.
 
 A Python project for managing customer data and interactions, inspired by basic CRM functionality.
 
+## Example Output
+
+![Customer Data System Output](assets/report.png)
+
 ## Overview
 
 This project explores how customer data can be structured and handled in code.
