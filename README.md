@@ -6,7 +6,7 @@ A Python project for managing customer data and interactions, inspired by basic 
 
 ## Example Output
 
-![Customer Data System Output](assets/report.png)
+<img src="assets/report.png" width="700">
 
 ## Overview
 
